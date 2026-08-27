@@ -1,0 +1,11 @@
+# Kept intentionally small - this runs on a 512MB Pi Zero 2 W alongside
+# Chromium, which is the real memory hog. No uvicorn[standard] (skips
+# uvloop/httptools), no heavy HTTP clients.
+fastapi==0.115.0
+uvicorn==0.30.6
+pydantic==2.9.2
+httpx==0.27.2
+python-dotenv==1.0.1
+PyYAML==6.0.2
+caldav==1.3.9
+paho-mqtt==1.6.1

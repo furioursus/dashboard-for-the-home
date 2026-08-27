@@ -1,0 +1,291 @@
+/* Kiosk display: 1280x800, viewed from a couple feet away, touch-driven.
+   Big text, high contrast, dark background (this thing runs 24/7 - no
+   reason to blast a bright white rectangle into the room). Deliberately
+   no transitions/animations beyond a couple of instant-feeling touch
+   states - the Pi Zero 2 W's GPU has better things to do. */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: #0d0f12;
+  color: #e8e8ea;
+  font-family: "Noto Sans", "DejaVu Sans", Arial, sans-serif;
+}
+
+#header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: #16181d;
+  border-bottom: 1px solid #24272e;
+}
+
+#header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: #f4f4f5;
+}
+
+#clock {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  color: #9aa0a8;
+}
+
+#grid {
+  height: calc(800px - 56px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  padding: 8px;
+}
+
+.panel {
+  background: #16181d;
+  border: 1px solid #24272e;
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel h2 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7c828c;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.panel-body {
+  flex: 1;
+  overflow: hidden;
+  font-size: 18px;
+}
+
+/* Border shifts amber when a panel's last poll failed - the last good
+   data stays on screen underneath rather than the panel going blank. */
+.panel.stale {
+  border-color: #5a3d1a;
+}
+
+.loading, .empty, .error-msg {
+  color: #6b7078;
+  font-size: 16px;
+}
+
+.error-msg {
+  color: #d9736a;
+}
+
+/* ---- Todoist ---- */
+.task-group-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6b7078;
+  margin: 10px 0 4px 0;
+}
+.task-group-label:first-child {
+  margin-top: 0;
+}
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.task-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid #1f2229;
+}
+.task-item:last-child {
+  border-bottom: none;
+}
+.task-content {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-due {
+  color: #7c828c;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.task-item.overdue .task-content {
+  color: #e0857c;
+}
+.priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #3a3f47;
+}
+.priority-dot.p4 { background: #d9736a; }
+.priority-dot.p3 { background: #e0a94a; }
+.priority-dot.p2 { background: #5b9bd5; }
+
+/* ---- Calendar ---- */
+.next-event {
+  background: #1c2530;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.next-event .label {
+  font-size: 12px;
+  color: #7ea6d9;
+  text-transform: uppercase;
+}
+.next-event .summary {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 2px 0;
+}
+.next-event .countdown {
+  color: #9aa0a8;
+  font-size: 14px;
+}
+.event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.event-item {
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+}
+.event-time {
+  color: #7c828c;
+  width: 68px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Hue ---- */
+#hue-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+.hue-name {
+  font-size: 20px;
+  font-weight: 600;
+}
+.hue-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hue-toggle {
+  width: 96px;
+  height: 52px;
+  border-radius: 26px;
+  border: none;
+  background: #2a2e36;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.hue-toggle::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #55595f;
+}
+.hue-toggle.on {
+  background: #4a7a2e;
+}
+.hue-toggle.on::after {
+  left: 48px;
+  background: #f4f4f5;
+}
+.brightness-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+input[type="range"].brightness-slider {
+  flex: 1;
+  height: 44px;
+  accent-color: #e0a94a;
+}
+.brightness-value {
+  width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #9aa0a8;
+}
+
+/* ---- Bambu ---- */
+#bambu-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+.bambu-state {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #2a2e36;
+  color: #b8bcc2;
+}
+.bambu-state.printing { background: #234a2e; color: #7fd694; }
+.bambu-state.paused { background: #4a3d1a; color: #e0c14a; }
+.bambu-state.error { background: #4a231e; color: #e08277; }
+
+.bambu-task-name {
+  font-size: 20px;
+  font-weight: 600;
+}
+.progress-track {
+  height: 16px;
+  border-radius: 8px;
+  background: #24272e;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: #5b9bd5;
+}
+.bambu-meta {
+  display: flex;
+  gap: 24px;
+  color: #9aa0a8;
+  font-size: 15px;
+}
+.bambu-temps {
+  display: flex;
+  gap: 24px;
+  font-size: 15px;
+  color: #b8bcc2;
+}

@@ -1,0 +1,35 @@
+# Copy this file to config.yaml and edit it. Unlike .env, this file is
+# meant to be committed if you fork this repo per-room - it's the
+# non-secret, room-specific configuration: which Hue group to control,
+# what to call things, how chatty each panel is.
+
+room:
+  display_name: "Office"
+
+hue:
+  # The Hue "group" (Room or Zone) ID to control - find it via the bridge's
+  # local API: GET https://<bridge-ip>/api/<key>/groups and match the name.
+  group_id: "1"
+
+todoist:
+  # Leave blank to use the built-in "overdue | today | N days" filter below.
+  # Set this to any Todoist filter query (https://todoist.com/help/articles/introduction-to-filters)
+  # to fully override it, e.g. "overdue | today | #Office".
+  filter: ""
+  upcoming_days: 3
+
+calendar:
+  # Restrict to specific calendar display names (as CalDAV reports them).
+  # Empty list = pull from every calendar the account exposes.
+  calendar_names: []
+  lookahead_days: 3
+
+polling:
+  todoist_seconds: 180
+  calendar_seconds: 900
+  hue_seconds: 7
+  bambu_seconds: 5
+
+server:
+  host: "0.0.0.0"
+  port: 5000
