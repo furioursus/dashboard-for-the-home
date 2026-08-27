@@ -1,0 +1,13 @@
+# Secrets / machine-specific config - never commit these.
+.env
+config.yaml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editors/OS
+.DS_Store
+*.swp

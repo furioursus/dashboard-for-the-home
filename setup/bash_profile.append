@@ -1,0 +1,7 @@
+# Appended to ~/.bash_profile by setup.sh.
+# On the autologin tty1 shell, start X (which runs our .xinitrc) - but only
+# if we're not already inside an X session, and only on tty1 so a second
+# login (e.g. over SSH) doesn't also try to grab the display.
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+  exec startx -- -nocursor
+fi

@@ -1,0 +1,36 @@
+# User-level unit (systemd --user): launches Chromium in kiosk mode and
+# restarts it if it crashes or gets OOM-killed. Install to
+# ~/.config/systemd/user/kiosk-chromium.service and enable it - see
+# setup.sh, which also runs `loginctl enable-linger pi` so this starts at
+# boot even before an interactive login completes.
+#
+# It's independent of the X startup path (tty1 autologin -> .bash_profile
+# -> startx -> .xinitrc -> openbox). Chromium fails fast if DISPLAY :0
+# isn't up yet; Restart=always + RestartSec just keeps retrying every 2s
+# until openbox is ready, which is a perfectly fine synchronization
+# strategy for a boot sequence measured in seconds.
+
+[Unit]
+Description=Kiosk Chromium (Office Pi Dashboard)
+After=graphical-session.target
+
+[Service]
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/chromium-browser \
+  --kiosk \
+  --app=http://localhost:5000 \
+  --noerrdialogs \
+  --disable-infobars \
+  --disable-session-crashed-bubble \
+  --disable-translate \
+  --no-first-run \
+  --fast \
+  --fast-start \
+  --overscroll-history-navigation=0 \
+  --disable-pinch \
+  --check-for-update-interval=31536000
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

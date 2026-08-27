@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
+  <title>Office Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header id="header">
+    <h1 id="room-name">Room</h1>
+    <div id="clock">--:--</div>
+  </header>
+
+  <main id="grid">
+    <section class="panel" id="panel-todoist" aria-label="Tasks">
+      <h2>Tasks</h2>
+      <div class="panel-body" id="todoist-body">
+        <p class="loading">Loading…</p>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-calendar" aria-label="Calendar">
+      <h2>Calendar</h2>
+      <div class="panel-body" id="calendar-body">
+        <p class="loading">Loading…</p>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-hue" aria-label="Lights">
+      <h2>Lights</h2>
+      <div class="panel-body" id="hue-body">
+        <p class="loading">Loading…</p>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-bambu" aria-label="Printer">
+      <h2>Printer</h2>
+      <div class="panel-body" id="bambu-body">
+        <p class="loading">Loading…</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
